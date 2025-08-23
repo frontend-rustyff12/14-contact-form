@@ -1,7 +1,8 @@
+import Form from "./Form";
 function App() {
   return (
-    <main className="bg-cust-Green-600">
-      <h1>Testing</h1>
+    <main className="min-h-screen bg-cust-Green-200 py-8 px-4 md:flex md:justify-center md:items-center">
+      <Form />
     </main>
   );
 }
