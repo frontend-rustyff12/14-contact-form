@@ -122,9 +122,7 @@ export default function Form() {
             <div className="flex flex-col gap-4 md:flex-row">
               <label
                 htmlFor="general"
-                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer
-    outline outline-cust-Grey-500
-    peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
+                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer outline outline-cust-Grey-500 peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
   `}
               >
                 <input
