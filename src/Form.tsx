@@ -37,11 +37,21 @@ export default function Form() {
     return newErrors;
   }
 
+  function handleQueryChange(value: string) {
+    setFormObj((prev) => ({
+      ...prev,
+      query: { value, isValid: ["support", "general"].includes(value) },
+    }));
+  }
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const data: FormDataRaw = Object.fromEntries(formData.entries());
+
+      // Override query value from state for controlled radio buttons
+      data.query = formObj.query.value;
 
       // Update validation state
       const validationErrors = validateForm(data);
@@ -51,10 +61,7 @@ export default function Form() {
           fname: { value: data.fname || "", isValid: !validationErrors.fname },
           lname: { value: data.lname || "", isValid: !validationErrors.lname },
           email: { value: data.email || "", isValid: !validationErrors.email },
-          query: {
-            value: data.query || "support",
-            isValid: !validationErrors.query,
-          },
+          query: { value: data.query || "", isValid: !validationErrors.query },
           message: {
             value: data.message || "",
             isValid: !validationErrors.message,
@@ -70,7 +77,7 @@ export default function Form() {
         fname: { value: data.fname || "", isValid: true },
         lname: { value: data.lname || "", isValid: true },
         email: { value: data.email || "", isValid: true },
-        query: { value: data.query || "support", isValid: true },
+        query: { value: data.query || "", isValid: true },
         message: { value: data.message || "", isValid: true },
         consent: data.consent === "on",
       };
@@ -95,15 +102,33 @@ export default function Form() {
             <label className="text-cust-Grey-900" htmlFor="fname">
               First Name *
             </label>
-            <input className={inputClass} type="text" id="fname" name="fname" />
-            {errors.fname && <p className="text-red-500">{errors.fname}</p>}
+            <input
+              className={`${inputClass} ${
+                !errors.fname
+                  ? "outline outline-cust-Grey-500"
+                  : "outline outline-cust-Red"
+              }`}
+              type="text"
+              id="fname"
+              name="fname"
+            />
+            {errors.fname && <p className="text-cust-Red">{errors.fname}</p>}
           </div>
           <div className="flex flex-col gap-2 md:w-full">
             <label className="text-cust-Grey-900" htmlFor="lname">
               Last Name *
             </label>
-            <input className={inputClass} type="text" id="lname" name="lname" />
-            {errors.lname && <p className="text-red-500">{errors.lname}</p>}
+            <input
+              className={`${inputClass} ${
+                !errors.lname
+                  ? "outline outline-cust-Grey-500"
+                  : "outline outline-cust-Red"
+              }`}
+              type="text"
+              id="lname"
+              name="lname"
+            />
+            {errors.lname && <p className="text-cust-Red">{errors.lname}</p>}
           </div>
         </div>
 
@@ -111,8 +136,17 @@ export default function Form() {
           <label className="text-cust-Grey-900" htmlFor="email">
             Email Address *
           </label>
-          <input className={inputClass} type="email" id="email" name="email" />
-          {errors.email && <p className="text-red-500">{errors.email}</p>}
+          <input
+            className={`${inputClass} ${
+              !errors.email
+                ? "outline outline-cust-Grey-500"
+                : "outline outline-cust-Red"
+            }`}
+            type="email"
+            id="email"
+            name="email"
+          />
+          {errors.email && <p className="text-cust-Red">{errors.email}</p>}
         </div>
 
         {/* Query */}
@@ -122,36 +156,45 @@ export default function Form() {
             <div className="flex flex-col gap-4 md:flex-row">
               <label
                 htmlFor="general"
-                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer outline outline-cust-Grey-500 peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
-  `}
+                className={`${queryInputClass} ${
+                  formObj.query.value === "general"
+                    ? "bg-cust-Green-200 outline-1 outline-cust-Green-600"
+                    : "outline outline-cust-Grey-500"
+                }`}
               >
                 <input
                   type="radio"
                   id="general"
                   name="query"
                   value="general"
-                  className="peer h-4 w-4 accent-cust-Green-600"
+                  checked={formObj.query.value === "general"}
+                  onChange={() => handleQueryChange("general")}
+                  className="h-4 w-4 accent-cust-Green-600"
                 />
                 <span className="text-cust-Grey-900">General Request</span>
               </label>
 
               <label
                 htmlFor="support"
-                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer outline outline-cust-Grey-500 peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
-  `}
+                className={`${queryInputClass} ${
+                  formObj.query.value === "support"
+                    ? "bg-cust-Green-200 outline-1 outline-cust-Green-600"
+                    : "outline outline-cust-Grey-500"
+                }`}
               >
                 <input
                   type="radio"
                   id="support"
                   name="query"
                   value="support"
-                  className="peer h-4 w-4 accent-cust-Green-600"
+                  checked={formObj.query.value === "support"}
+                  onChange={() => handleQueryChange("support")}
+                  className="h-4 w-4 accent-cust-Green-600"
                 />
                 <span className="text-cust-Grey-900">Support Request</span>
               </label>
             </div>
-
-            {errors.query && <p className="text-red-500">{errors.query}</p>}
+            {errors.query && <p className="text-cust-Red">{errors.query}</p>}
           </fieldset>
         </div>
 
@@ -161,11 +204,15 @@ export default function Form() {
             Message *
           </label>
           <textarea
-            className={`${inputClass} h-58 md:h-32`}
+            className={`${inputClass} ${
+              !errors.email
+                ? "outline outline-cust-Grey-500"
+                : "outline outline-cust-Red"
+            } h-58 md:h-32`}
             name="message"
             id="message"
           ></textarea>
-          {errors.message && <p className="text-red-500">{errors.message}</p>}
+          {errors.message && <p className="text-cust-Red">{errors.message}</p>}
         </div>
         <div className="flex gap-4 flex-col">
           <div className="flex gap-4">
@@ -179,7 +226,7 @@ export default function Form() {
               I consent to being contacted by the team
             </label>
           </div>
-          {errors.consent && <p className="text-red-500">{errors.consent}</p>}
+          {errors.consent && <p className="text-cust-Red">{errors.consent}</p>}
         </div>
         <button className="bg-cust-Green-600 p-4 text-cust-White font-bold rounded-xl hover:bg-cust-Grey-900 cursor-pointer">
           Submit

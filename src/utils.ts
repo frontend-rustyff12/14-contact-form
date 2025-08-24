@@ -1,8 +1,8 @@
 export const inputClass =
-  "outline outline-cust-Grey-500 rounded-lg p-3 focus:outline-1 focus:outline-cust-Green-600";
+  " rounded-lg p-3 focus:outline-1 focus:outline-cust-Green-600";
 
 export const queryInputClass =
-  "rounded-lg p-3 focus:outline-1 focus:outline-cust-Green-600";
+  "rounded-lg p-3 flex items-center gap-4 md:w-full cursor-pointer ";
 
 type valueType = {
   value: string;
