@@ -13,7 +13,7 @@ export default function Form() {
     fname: { value: "", isValid: false },
     lname: { value: "", isValid: false },
     email: { value: "", isValid: false },
-    query: { value: "general", isValid: true },
+    query: { value: "", isValid: false },
     message: { value: "", isValid: false },
     consent: false,
   });
@@ -43,6 +43,7 @@ export default function Form() {
       const formData = new FormData(formRef.current);
       const data: FormDataRaw = Object.fromEntries(formData.entries());
 
+      // Update validation state
       const validationErrors = validateForm(data);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
@@ -74,7 +75,7 @@ export default function Form() {
         consent: data.consent === "on",
       };
       setFormObj(processedData);
-      console.log("Form submitted:", processedData);
+      console.log("Form submitted:", processedData, "", formObj);
     }
   }
 
@@ -119,42 +120,37 @@ export default function Form() {
           <fieldset>
             <legend className="mb-4 text-cust-Grey-900">Query Type *</legend>
             <div className="flex flex-col gap-4 md:flex-row">
-              <div
-                className={`${queryInputClass} flex items-center gap-4 md:w-full ${
-                  formObj.query.value === "general"
-                    ? "bg-cust-Green-200 outline-1 outline-cust-Green-600"
-                    : "outline outline-cust-Grey-500"
-                }`}
+              <label
+                htmlFor="general"
+                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer
+    outline outline-cust-Grey-500
+    peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
+  `}
               >
                 <input
-                  className="h-4 w-4 accent-cust-Green-600"
                   type="radio"
                   id="general"
                   name="query"
                   value="general"
+                  className="peer h-4 w-4 accent-cust-Green-600"
                 />
-                <label className="text-cust-Grey-900 " htmlFor="general">
-                  General Enquiry
-                </label>
-              </div>
-              <div
-                className={`${inputClass} flex items-center gap-4 md:w-full ${
-                  formObj.query.value === "support"
-                    ? "bg-cust-Green-200 outline-1 outline-cust-Green-600"
-                    : "outline outline-cust-Grey-500"
-                }`}
+                <span className="text-cust-Grey-900">General Request</span>
+              </label>
+
+              <label
+                htmlFor="support"
+                className={`${queryInputClass} flex items-center gap-4 md:w-full cursor-pointer outline outline-cust-Grey-500 peer-checked:bg-cust-Green-200 peer-checked:outline-1 peer-checked:outline-cust-Green-600
+  `}
               >
                 <input
-                  className="h-4 w-4 accent-cust-Green-600"
                   type="radio"
                   id="support"
                   name="query"
                   value="support"
+                  className="peer h-4 w-4 accent-cust-Green-600"
                 />
-                <label className="text-cust-Grey-900" htmlFor="support">
-                  Support Request
-                </label>
-              </div>
+                <span className="text-cust-Grey-900">Support Request</span>
+              </label>
             </div>
 
             {errors.query && <p className="text-red-500">{errors.query}</p>}
