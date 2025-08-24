@@ -1,22 +1,20 @@
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
+import Toast from "./Toast";
 import {
   inputClass,
   queryInputClass,
+  initialFormState,
   type formType,
   type FormDataRaw,
   type FormErrors,
-} from "./utils";
+} from "../utils";
+
 export default function Form() {
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [formObj, setFormObj] = useState<formType>({
-    fname: { value: "", isValid: false },
-    lname: { value: "", isValid: false },
-    email: { value: "", isValid: false },
-    query: { value: "", isValid: false },
-    message: { value: "", isValid: false },
-    consent: false,
-  });
+
+  const [formObj, setFormObj] = useState<formType>(initialFormState);
+  const [success, setSuccess] = useState<boolean>(false);
 
   // Validation
   function validateForm(data: FormDataRaw): FormErrors {
@@ -50,7 +48,7 @@ export default function Form() {
       const formData = new FormData(formRef.current);
       const data: FormDataRaw = Object.fromEntries(formData.entries());
 
-      // Override query value from state for controlled radio buttons
+      // Override  value for controlled radio buttons
       data.query = formObj.query.value;
 
       // Update validation state
@@ -83,11 +81,21 @@ export default function Form() {
       };
       setFormObj(processedData);
       console.log("Form submitted:", processedData, "", formObj);
+      setSuccess(true);
     }
   }
 
+  useEffect(() => {
+    if (success) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setFormObj(initialFormState);
+      formRef.current?.reset();
+    }
+  }, [success]);
+
   return (
     <section className="bg-cust-White p-6 font-karla rounded-2xl md:w-1/2 ">
+      <Toast visible={success} />
       <h1 className="text-3xl font-bold text-cust-Grey-900">Contact Us</h1>
 
       {/* Form */}

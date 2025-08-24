@@ -35,3 +35,12 @@ export interface FormErrors {
   message?: string;
   consent?: string;
 }
+
+export const initialFormState: formType = {
+  fname: { value: "", isValid: false },
+  lname: { value: "", isValid: false },
+  email: { value: "", isValid: false },
+  query: { value: "", isValid: false },
+  message: { value: "", isValid: false },
+  consent: false,
+};
